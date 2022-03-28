@@ -1,0 +1,276 @@
+JS
+
+const display1El = document.querySelector(".display-1");
+const display2El = document.querySelector(".display-2");
+const tempResultEl = document.querySelector(".temp-result");
+const numbersEl = document.querySelectorAll(".number");
+const operationEl = document.querySelectorAll('.operation');
+const equalEl = document.querySelector(".equal");
+const clearAllEl = document.querySelector('.all-clear');
+const clearLastEl = document.querySelector(".last-entity-clear");
+let dis1Num = ""; //first operand
+let dis2Num = ""; //second operand
+let result = null;
+let lastOperation = "";
+let haveDot = false; //checks whether number is floating point
+
+numbersEl.forEach((number) => {
+    number.addEventListener("click", (e) => {
+        if (e.target.innerText === "." && !haveDot) {
+            haveDot = true;
+        }
+        else if (e.target.innerText === "." && haveDot) { // Check whether the number contains two decimals
+            return;
+        }
+        dis2Num += e.target.innerText;
+        display2El.innerText = dis2Num;
+
+    });
+});
+
+operationEl.forEach((operation) => {
+    operation.addEventListener("click", (e) => {
+        if (!dis2Num) return;
+        haveDot = false;
+        const operationName = e.target.innerText;
+        if (dis1Num && dis2Num && lastOperation) {
+            mathOperation();
+        } else {
+            result = parseFloat(dis2Num);
+        }
+        clearVar(operationName);     //45 + 45 + 67 * 9
+        lastOperation = operationName;
+
+    })
+});
+
+function clearVar(name = "") {
+    dis1Num += dis2Num + " " + name + " ";
+    display1El.innerText = dis1Num;
+    display2El.innerText = "";
+    dis2Num = "";
+    tempResultEl.innerText = result;
+}
+
+function mathOperation() {
+    if (lastOperation === 'x') {
+        result = parseFloat(result) * parseFloat(dis2Num);
+    }
+    else if (lastOperation === "+") {
+        result = parseFloat(result) + parseFloat(dis2Num);
+    }
+    else if (lastOperation === "-") {
+        result = parseFloat(result) - parseFloat(dis2Num);
+    }
+    else if (lastOperation === "/") {
+        result = parseFloat(result) / parseFloat(dis2Num);
+    }
+    else if (lastOperation === "%") {
+        result = parseFloat(result) % parseFloat(dis2Num);
+    }
+}
+
+equalEl.addEventListener("click", () => {
+    if (!dis2Num || !dis1Num) return;
+    haveDot = false;
+    mathOperation();
+    clearVar();
+    display2El.innerText = result;
+    tempResultEl.innerText = "";
+    dis2Num = result;
+    dis1Num = "";
+});
+
+clearAllEl.addEventListener("click", () => {
+    dis1Num = "";
+    dis2Num = "";
+    display1El.innerText = "";
+    display2El.innerText = "";
+    result = "";
+    tempResultEl.innerText = "";
+});
+
+clearLastEl.addEventListener("click", () => {
+    display2El.innerText = "";
+    dis2Num = "";
+});
+
+window.addEventListener("keydown", (e) => {
+    if (
+        e.key === "0" ||
+        e.key === "1" ||
+        e.key === "2" ||
+        e.key === "3" ||
+        e.key === "4" ||
+        e.key === "5" ||
+        e.key === "6" ||
+        e.key === "7" ||
+        e.key === '8' ||
+        e.key === "9" ||
+        e.key === "."
+    ) {
+        clickButtonEl(e.key);
+    }
+    else if (e.key === "+" || e.key === "-" || e.key === "/" || e.key === "%") {
+        clickOperation(e.key);
+    }
+    else if (e.key === "*") {
+        clickOperation("x");
+    }
+    else if (e.key === "Enter" || e.key === "=") {
+        clickEqual();
+    }
+});
+
+function clickButtonEl(key) {
+    numbersEl.forEach((button) => {
+        if (button.innerText === key) {
+            button.click();
+        }
+    })
+}
+
+function clickOperation(key) {
+    operationEl.forEach((operation) => {
+        if (operation.innerText === key) {
+            operation.click();
+        }
+    })
+}
+
+function clickEqual() {
+    equalEl.click();
+}
+
+
+CSS
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  font-family: "Montserrat", sans-serif;
+}
+
+section {
+  background-color: rgb(18, 26, 31);
+  min-height: 100vh;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.container {
+  width: 90%;
+  max-width: 400px;
+  background-color: rgb(39, 55, 59);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.display {
+  background-color: rgb(182, 182, 182);
+  height: 100px;
+  width: 100%;
+  text-align: right;
+  padding: 20px;
+  font-size: 30px;
+}
+
+.display-1 {
+  opacity: 0.4;
+  font-size: 20px;
+  height: 20px;
+  overflow: hidden;
+}
+
+.temp-result {
+  position: absolute;
+  bottom: 0;
+  left: 10;
+  font-size: 20px;
+  opacity: 0.3;
+}
+
+.all_buttons {
+  color: whitesmoke;
+  display: grid;
+  grid-template: repeat(4, 1fr) / repeat(4, 1fr);
+}
+
+.button {
+  border: 0.5px solid rgba(92, 92, 92, 0.137);
+  display: inline-block;
+  height: 100px;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 30px;
+  cursor: pointer;
+}
+
+.button:hover {
+  background-color: rgb(30, 43, 46);
+}
+
+.btn-0 {
+  grid-column: 1/3;
+}
+
+HTML
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculator App</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <section>
+        <div class="container">
+            <div class="calculator">
+                <div class="display">
+                    <div class="display-1">0</div>
+                    <div class="display-2">0</div>
+                    <div class="temp-result"></div>
+                </div>
+                <div class="all_buttons">
+                    <div class="button all-clear">C</div>
+                    <div class="button last-entity-clear">CE</div>
+                    <div class="button operation">%</div>
+                    <div class="button operation">/</div>
+                    <div class="button number">7</div>
+                    <div class="button number">8</div>
+                    <div class="button number">9</div>
+                    <div class="button operation">x</div>
+                    <div class="button number">4</div>
+                    <div class="button number">5</div>
+                    <div class="button number">6</div>
+                    <div class="button operation">-</div>
+                    <div class="button number">1</div>
+                    <div class="button number">2</div>
+                    <div class="button number">3</div>
+                    <div class="button operation">+</div>
+                    <div class="button btn-0 number">0</div>
+                    <div class="button number dot">.</div>
+                    <div class="button equal">=</div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <script src="script.js"></script>
+</body>
+
+</html>
